@@ -7,9 +7,18 @@ iOS automation requires Appium server running on a Mac machine because of XCode 
 1. Appium needs Node.js, to work with WebDriver JSON wire protocol. So we need to install Node first.  
    ``brew install node``  
    :exclamation: Do not installed node with `sudo`
-2. Now install Appium via npm (package manager)
-   ``npm install -g appium``   
-   a. While installing appium , npm may ask you to use sudo for this kind error.  
+2. Install Appium via npm (package manager)  
+   ``npm install -g appium``  
+   a. While installing appium , npm may ask to use sudo for such kind error.
+   ```
+   npm ERR! Reno: -13,
+   npm ERR! code: ‘EACCES’,
+   npm ERR! syscall: ‘rmdir‘,
+   npm ERR! path ‘usr/local/lib/node_modules/appium/node_modules/.appium-xcuitest-driver.DELETE/WebDriverAgent/Carthage/Build/Mac/RoutingHTTPServer.framework.dSYM/Contents‘,
+   npm ERR! parent: ‘appium’ }
+   npm ERR!
+   npm ERR! Please try running this command again as root/Administrator.
+   ```
    b. Instead of using `sudo` the *working directory* of npm can be [changed](https://docs.npmjs.com/getting-started/fixing-npm-permissions) such that appium gets installed to non-sudo location.
 3. Install  *appium-doctor* to verify if we are ready with all the dependencies to automate iOS application.  
    ``npm install -g appium-doctor``  
@@ -48,7 +57,7 @@ Some helpful notes complementing above "steps":
     2018-02-24 13:26:31.290 xcodebuild[20982:4858431] Error Domain=com.apple.platform.iphoneos Code=-12 "Unable to launch com.apple.test.WebDriverAgentRunner-Runner" UserInfo={NSLocalizedDescription=Unable to launch com.apple.test.WebDriverAgentRunner-Runner, NSUnderlyingError=0x7fbbddc412c0 {Error Domain=DTXMessage Code=1 "(null)" UserInfo={DTXExceptionKey=The operation couldn’t be completed. Unable to launch com.apple.test.WebDriverAgentRunner-Runner because it has an invalid code signature, inadequate entitlements or its profile has not been explicitly trusted by the user. : Failed to launch process with bundle identifier 'com.apple.test.WebDriverAgentRunner-Runner'}}}
     2018-02-24 13:26:31.290 xcodebuild[20982:4858431] Error Domain=IDETestOperationsObserverErrorDomain Code=6 "Early unexpected exit, operation never finished bootstrapping - no restart will be attempted" UserInfo={NSLocalizedDescription=Early unexpected exit, operation never finished bootstrapping - no restart will be attempted}
     ```
-    This has to be done explicitly on the mobile device.
+    This has to be done explicitly on the mobile device.  
     ``Settings -> General -> Profiles & Device Management -> <Developer App> -> Verify App``
     
   - Couldn’t be loaded because it is damaged or missing necessary resources
@@ -59,9 +68,9 @@ Some helpful notes complementing above "steps":
     ```
     1. Happens when code signing is not done properly. Please go through this [issue](https://github.com/appium/appium/issues/8058) .
     2. If signing is proper, then there may be a possibility of limited access permissions in the `appium-xcuitest-driver/WebDriverAgent` directory.  
-       The only way to overcome this is to re-install Appium [without sudo][Install Appium on Mac] via npm
-       ``npm uninstall -g appium``
-       ``npm install -g appium``
+       The only way to overcome this is to re-install Appium [without sudo][Install Appium on Mac] via npm  
+       ```npm uninstall -g appium```  
+       ```npm install -g appium```
      
    - Successful WebDriverAgentRunner `test` started but at wrong Port
      ```
@@ -78,11 +87,13 @@ Some helpful notes complementing above "steps":
      ```
      
      The WebDriverAgentRunner should be not started at `http://<MobileIP>:0` but `http://<MobileIP>:8100`.  
-     Set the port in env before starting the test. More in [docs](https://appium.io/docs/en/advanced-concepts/wda-custom-server/).  
-     ``export USE_PORT=8100``
+     Set the port in env before starting the test using below command. More details in [docs](https://appium.io/docs/en/advanced-concepts/wda-custom-server/).  
+     ```export USE_PORT=8100```
      
 * Once WebDriverAgentRunner tests are working fine, finally check with curl command.  
-   ``curl -X GET -H "Content-Type: application/json;charset=UTF-8, accept: application/json" http://<Mobile Device IP>:8100/status``
+   ```
+   curl -X GET -H "Content-Type: application/json;charset=UTF-8, accept: application/json" http://<Mobile Device IP>:8100/status
+   ```
    
    Should return something like this:
    ```
